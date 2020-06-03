@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+  <head>
+    <title>Zahlenratespiel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+  </head>
+
+
+  <body onload="createRandomNumber();">
+  <div class="row">
+    <div class="container py-3">
+    <div class="jumbotron text-center">
+      <h2>Zahlenratespiel</h2>
+      <p>Errate die Zahl zwischen 1 und 1000. Du hast 10 Versuche.</p>
+      <hr>
+      <p>&#8482; 2020, Tom Rößler</p>
+    </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container">
+      <form>
+        <div class="form-group">
+        <div class="row">
+          <h3>Eingaben</h3>
+        </div>
+        <div class="row py-1">
+          <label for="input">Gib deinen ersten Tipp ein:</label>
+          <input type="number" class="form-control" placeholder="1-1000" min="1" max="1000" id="input">
+        </div>
+        <div class="row py-1">
+          <input type="button" class="btn btn-primary mr-1" id="submit" value="Raten" onclick="evaluateInput();">
+          <input type="button" class="btn btn-primary mr-1" id="newGame" value="Neues Spiel starten" onclick="restartGame();">
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container px-0">
+      <div class="row">
+      <div class="col"> <!--Ausgaben-->
+        <div class="row py-3">
+          <h3>Ausgaben</h3>
+        </div>
+        <div class="row py-1">
+          <p id="guessCountParagraph"></p>
+        </div>
+        <div class="row py-1">
+          <p id="guessEvaluationParagraph"></p>
+        </div>
+      </div>
+      <div class="col"> <!--Chart-->
+        <canvas id="myChart" width="400" height="400"></canvas>
+      </div>
+    </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      var guessCounter  = 0;
+      var random        = 0;
+      var guesses     = new Array(10);
+      var won           = false;
+      var chart         = document.getElementById("myChart").getContext("2d");
+      var settings={
+        type: "scatter",
+        data: {
+          labels: ["Tipp 1","Tipp 2","Tipp 3","Tipp 4","Tipp 5","Tipp 6","Tipp 7","Tipp 8","Tipp 9","Tipp 10"],
+          datasets: [
+            {
+              label: 'Geratene Zahlen',
+              backgroundColor: 'rgb(77,166,255)',
+              borderColor: 'rgb(77,166,255)',
+              data: [
+                {x: 0, y: guesses[0]},
+                {x: 1, y: guesses[1]},
+                {x: 2, y: guesses[2]},
+                {x: 3, y: guesses[3]},
+                {x: 4, y: guesses[4]},
+                {x: 5, y: guesses[5]},
+                {x: 6, y: guesses[6]},
+                {x: 7, y: guesses[7]},
+                {x: 8, y: guesses[8]},
+                {x: 9, y: guesses[9]}
+              ]
+            }
+          ]
+        },
+        options:
+          {
+            scales:
+              {
+                yAxes: [
+                  {
+                    ticks: {
+                      suggestedMin: 0,
+                      suggestedMax: 1000
+                    }
+                  }
+                ]
+              }
+          }
+      }
+      var lineChart     = new Chart(chart,settings);
+
+      function removeValues(){
+          var i;
+          for(i=0; i < guessCounter; i++){
+          guesses.pop();
+          lineChart.update();
+          }
+      }
+
+      function createRandomNumber() {
+        random = Math.floor(Math.random() * 1000) + 1;
+        console.log("Random number created: " + random);
+      }
+
+      function evaluateInput() {
+        document.getElementById('guessCountParagraph').innerHTML = "Anzahl eingetippter Tipps: " + (guessCounter + 1);
+      //  addValue(document.getElementById("input").value);
+        guesses[guessCounter] = document.getElementById("input").value;
+      //  console.log(lineChart);
+        if (guesses[guessCounter] == random) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Richtig!";
+          won = true;
+        } else if (guesses[guessCounter] < random) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "zu klein!";
+        } else {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Zu groß!";
+        }
+
+        if (guessCounter == 9 && won == false) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Du hast keine Versuche mehr übrig, du Looser";
+          document.getElementById("input").disabled = true;
+          document.getElementById("submit").disabled = true;
+        }
+        guessCounter++;
+        lineChart.destroy();
+        lineChart=new Chart(chart,{
+          type: "scatter",
+          data: {
+            labels: ["Tipp 1","Tipp 2","Tipp 3","Tipp 4","Tipp 5","Tipp 6","Tipp 7","Tipp 8","Tipp 9","Tipp 10"],
+            datasets: [
+              {
+                label: 'Geratene Zahlen',
+                backgroundColor: 'rgb(77,166,255)',
+                borderColor: 'rgb(77,166,255)',
+                data: [
+                  {x: 0, y: guesses[0]},
+                  {x: 1, y: guesses[1]},
+                  {x: 2, y: guesses[2]},
+                  {x: 3, y: guesses[3]},
+                  {x: 4, y: guesses[4]},
+                  {x: 5, y: guesses[5]},
+                  {x: 6, y: guesses[6]},
+                  {x: 7, y: guesses[7]},
+                  {x: 8, y: guesses[8]},
+                  {x: 9, y: guesses[9]}
+                ]
+              }
+            ]
+          },
+          options:
+            {
+              scales:
+                {
+                  yAxes: [
+                    {
+                      ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 1000
+                      }
+                    }
+                  ]
+                }
+            }
+        });
+      }
+
+      function restartGame() {
+        removeValues();
+        guesses = new Array(10);
+        guessCounter = 0;
+        won = false;
+        createRandomNumber();
+        document.getElementById("input").disabled = false;
+        document.getElementById("submit").disabled = false;
+        document.getElementById("input").value = null;
+        document.getElementById('guessCountParagraph').innerHTML = "";
+        document.getElementById("guessEvaluationParagraph").innerHTML = "";
+      }
+  </script>
+  </body>
+</html>
