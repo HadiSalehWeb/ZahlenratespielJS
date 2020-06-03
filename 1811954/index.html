@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+        <script src="assets/js/script.js"></script>
+        <title>Zahlenratespiel</title>
+    </head>
+    <body class="bg-light">
+
+        <div class="bg-dark text-light text-center">
+            <h1>Zahlenratespiel</h1>
+            <p>Raten Sie eine Zahl von 0 bis 1000. Sie haben maximal 10 Versuche.</p>
+            <hr>
+            <p>&copy Musterteamname3</p>
+        </div>
+
+        <!-- Hauptseite -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- Eingabe -->
+                    <div class="container text-left">
+                        <h2>Eingaben</h2>
+                        <p>Geben Sie eine Zahl ein.</p>
+
+                        <input class="form-control shadow-sm p-3 mb-5 bg-white rounded" id="eingabe" type="number" value="0 bis 1000" min="0" max="1000">
+
+                        <input id="spielButton" class="btn btn-outline-success" type="button" value="Tipp abgeben" onclick="spielen()">
+                        <input class="btn btn-outline-danger" type="button" value="Spiel zurücksetzen" onclick="neustart()">
+
+                        <br>
+                    </div>
+                    <!-- Ende Eingabe -->
+                </div>
+
+                <div class="col-sm-6 d-none" id="ausgabe">
+                    <!-- Ausgabe -->
+                    <div class="container">
+                        <h2>Ausgaben</h2>
+                        <p>Anzahl bisheriger Versuche: <span id="versuche"></span></p>
+                        <p id="abweichungText">Tipp ist zu <span id="abweichung"></span></p>
+                        <p class="d-none" id="spielEndeText">Sie haben <span id="spielEnde"></span></p>
+                    </div>
+
+
+                    <!-- Ende Ausgabe -->
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Ende Hauptseite -->
+        <div class="container d-none" id="ausgabeChart">
+            <br>
+            <h3>Grafische Darstellung des Verlaufs</h3>
+            <canvas id="myChart" width="500" height="250"></canvas>
+        </div>
+
+    </body>
+</html>
