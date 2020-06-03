@@ -68,85 +68,11 @@
   <script type="text/javascript">
       var guessCounter  = 0;
       var random        = 0;
-      var guesses     = new Array(10);
+      var guesses       = new Array(10);
       var won           = false;
       var chart         = document.getElementById("myChart").getContext("2d");
-      var settings={
-        type: "scatter",
-        data: {
-          labels: ["Tipp 1","Tipp 2","Tipp 3","Tipp 4","Tipp 5","Tipp 6","Tipp 7","Tipp 8","Tipp 9","Tipp 10"],
-          datasets: [
-            {
-              label: 'Geratene Zahlen',
-              backgroundColor: 'rgb(77,166,255)',
-              borderColor: 'rgb(77,166,255)',
-              data: [
-                {x: 0, y: guesses[0]},
-                {x: 1, y: guesses[1]},
-                {x: 2, y: guesses[2]},
-                {x: 3, y: guesses[3]},
-                {x: 4, y: guesses[4]},
-                {x: 5, y: guesses[5]},
-                {x: 6, y: guesses[6]},
-                {x: 7, y: guesses[7]},
-                {x: 8, y: guesses[8]},
-                {x: 9, y: guesses[9]}
-              ]
-            }
-          ]
-        },
-        options:
-          {
-            scales:
-              {
-                yAxes: [
-                  {
-                    ticks: {
-                      suggestedMin: 0,
-                      suggestedMax: 1000
-                    }
-                  }
-                ]
-              }
-          }
-      }
-      var lineChart     = new Chart(chart,settings);
-
-      function removeValues(){
-          var i;
-          for(i=0; i < guessCounter; i++){
-          guesses.pop();
-          lineChart.update();
-          }
-      }
-
-      function createRandomNumber() {
-        random = Math.floor(Math.random() * 1000) + 1;
-        console.log("Random number created: " + random);
-      }
-
-      function evaluateInput() {
-        document.getElementById('guessCountParagraph').innerHTML = "Anzahl eingetippter Tipps: " + (guessCounter + 1);
-      //  addValue(document.getElementById("input").value);
-        guesses[guessCounter] = document.getElementById("input").value;
-      //  console.log(lineChart);
-        if (guesses[guessCounter] == random) {
-          document.getElementById('guessEvaluationParagraph').innerHTML = "Richtig!";
-          won = true;
-        } else if (guesses[guessCounter] < random) {
-          document.getElementById('guessEvaluationParagraph').innerHTML = "zu klein!";
-        } else {
-          document.getElementById('guessEvaluationParagraph').innerHTML = "Zu groß!";
-        }
-
-        if (guessCounter == 9 && won == false) {
-          document.getElementById('guessEvaluationParagraph').innerHTML = "Du hast keine Versuche mehr übrig, du Looser";
-          document.getElementById("input").disabled = true;
-          document.getElementById("submit").disabled = true;
-        }
-        guessCounter++;
-        lineChart.destroy();
-        lineChart=new Chart(chart,{
+      var lineChart     = new Chart(chart,
+        {
           type: "scatter",
           data: {
             labels: ["Tipp 1","Tipp 2","Tipp 3","Tipp 4","Tipp 5","Tipp 6","Tipp 7","Tipp 8","Tipp 9","Tipp 10"],
@@ -185,6 +111,44 @@
                 }
             }
         });
+
+      function removeValues(){
+          var i;
+          for(i=0; i < guessCounter; i++){
+          guesses.pop();
+          lineChart.update();
+          }
+      }
+
+      function createRandomNumber() {
+        random = Math.floor(Math.random() * 1000) + 1;
+        console.log("Random number created: " + random);
+      }
+
+      function evaluateInput() {
+        document.getElementById('guessCountParagraph').innerHTML = "Anzahl eingetippter Tipps: " + (guessCounter + 1);
+      //  addValue(document.getElementById("input").value);
+        guesses[guessCounter] = document.getElementById("input").value;
+        console.log(lineChart);
+        lineChart.data.datasets[0].data.push({ x: guessCounter, y: guesses[guessCounter] });
+        //console.log(lineChart);
+
+        if (guesses[guessCounter] == random) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Richtig!";
+          won = true;
+        } else if (guesses[guessCounter] < random) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "zu klein!";
+        } else {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Zu groß!";
+        }
+
+        if (guessCounter == 9 && won == false) {
+          document.getElementById('guessEvaluationParagraph').innerHTML = "Du hast keine Versuche mehr übrig!";
+          document.getElementById("input").disabled = true;
+          document.getElementById("submit").disabled = true;
+        }
+        guessCounter++;
+        lineChart.update();
       }
 
       function restartGame() {
