@@ -83,6 +83,8 @@ const restart = function () {
     document.getElementById('ausgabe').style.opacity = 0
     document.getElementById('result').style.display = 'none'
     document.getElementById('result').className = 'text-light rounded'
+    chart.data.datasets[0].data = []
+    chart.update()
     state.finished = false
     state.number = Math.floor(minGuess + (maxGuess - minGuess) * Math.random())
     state.guess = -1
